@@ -37,10 +37,42 @@ public class JogadorModel {
     private int numeroCamisa;
     private boolean status = true;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_do_jogador_partida", length = 50)
+    private StatusJogadorPartida statusJogadorPartida;
+
     private long pontuacaoTotal;
     private long pontuacaoMedia;
     private int golsMarcados;
     private int assistencias;
     private int partidasDisputadas;
+
+    @Column(name = "minutos_jogados", nullable = false, columnDefinition = "int default 0")
+    private int minutosJogados;
+
+    //Metodos para alterar Status do jogador
+    public void escalarJogador(){
+        this.statusJogadorPartida = StatusJogadorPartida.ESCALADO;
+    }
+
+    public void reservarJogador(){
+        this.statusJogadorPartida = StatusJogadorPartida.RESERVA;
+    }
+
+    public void jogarPartida(){
+        this.statusJogadorPartida = StatusJogadorPartida.JOGANDO_PARTIDA;
+    }
+
+    public void substituirJogador(){
+        this.statusJogadorPartida = StatusJogadorPartida.SUBSTITUIDO;
+    }
+
+    public void jogadorLesionado (){
+        this.statusJogadorPartida = StatusJogadorPartida.LESIONADO;
+    }
+
+    public void jogadorDescansando (){
+        this.statusJogadorPartida = StatusJogadorPartida.FORA_DA_PARTIDA;
+    }
 
 }
