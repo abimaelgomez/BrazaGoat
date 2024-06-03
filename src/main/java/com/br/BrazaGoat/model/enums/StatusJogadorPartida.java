@@ -1,4 +1,4 @@
-package com.br.BrazaGoat.model;
+package com.br.BrazaGoat.model.enums;
 
 public enum StatusJogadorPartida {
     FORA_DA_PARTIDA,
