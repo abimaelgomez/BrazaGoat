@@ -1,10 +1,13 @@
 package com.br.BrazaGoat.service;
 
-import com.br.BrazaGoat.model.JogadorModel;
+import com.br.BrazaGoat.model.entities.JogadorModel;
+import com.br.BrazaGoat.model.entities.SorteioModel;
 import com.br.BrazaGoat.repositories.JogadorRepository;
+import com.br.BrazaGoat.repositories.SorteioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -13,6 +16,9 @@ public class SorteioEquipeService {
 
     @Autowired
     private JogadorRepository jogadorRepository;
+
+    @Autowired
+    private SorteioRepository sorteioRepository;
 
     private final int quantidadeGoleiros = 1; // Quantidade de goleiros por equipe
     private final int quantidadeJogadoresLinha = 2; // Quantidade de jogadores de linha por equipe
@@ -95,26 +101,39 @@ public class SorteioEquipeService {
             }
         }
 
+
+// Criar e salvar o sorteio
+        SorteioModel sorteio = SorteioModel.builder()
+                .dataSorteio(LocalDateTime.now())
+                .jogadoresSorteados(jogadoresAtivos)
+                .equipeA(equipeA)
+                .equipeB(equipeB)
+                .jogadoresReserva(reservas)
+                .build();
+
+        sorteioRepository.save(sorteio);
+
         // Atualizar o status dos jogadores no banco de dados
         jogadorRepository.saveAll(jogadoresAtivos);
 
-        // Exibir as equipes formadas
+// Exibir as equipes formadas
         System.out.println("_________________________________________");
+        System.out.println("# UUID PARTIDA:" + sorteio.getIdSorteio() + " #");
         System.out.println("     ##### EQUIPES SORTEADAS #####");
         System.out.println("- - - - - - - - - - - - - - - - - - - - -");
         System.out.println("- EQUIPE A:");
         for (JogadorModel jogador : equipeA) {
-            System.out.println(jogador.getNumeroCamisa() + " - " + jogador.getNome() + " - " + jogador.getPosicao() + " #STATUS: " + jogador.getStatusJogadorPartida());
+            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
         }
         System.out.println("- - - - - - - - - - - - - - - - - - - - -");
         System.out.println("- EQUIPE B:");
         for (JogadorModel jogador : equipeB) {
-            System.out.println(jogador.getNumeroCamisa() + " - " + jogador.getNome() + " - " + jogador.getPosicao() + " #STATUS: " + jogador.getStatusJogadorPartida());
+            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
         }
         System.out.println("- - - - - - - - - - - - - - - - - - - - -");
         System.out.println(" # RESERVAS #");
         for (JogadorModel jogador : reservas) {
-            System.out.println(jogador.getNumeroCamisa() + " - " + jogador.getNome() + " - " + jogador.getPosicao() + " #STATUS: " + jogador.getStatusJogadorPartida());
+            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
         }
         System.out.println("_________________________________________");
     }
