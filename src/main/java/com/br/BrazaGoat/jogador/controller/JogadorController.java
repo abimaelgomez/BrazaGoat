@@ -1,8 +1,8 @@
-package com.br.BrazaGoat.controller;
+package com.br.BrazaGoat.jogador.controller;
 
-import com.br.BrazaGoat.model.dtos.JogadorRecordDto;
-import com.br.BrazaGoat.model.entities.JogadorModel;
-import com.br.BrazaGoat.repositories.JogadorRepository;
+import com.br.BrazaGoat.jogador.repositories.JogadorRepository;
+import com.br.BrazaGoat.jogador.dtos.JogadorRecordDto;
+import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

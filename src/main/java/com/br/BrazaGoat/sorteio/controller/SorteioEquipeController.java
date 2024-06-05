@@ -1,6 +1,6 @@
-package com.br.BrazaGoat.controller;
+package com.br.BrazaGoat.sorteio.controller;
 
-import com.br.BrazaGoat.service.SorteioEquipeService;
+import com.br.BrazaGoat.sorteio.service.SorteioEquipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

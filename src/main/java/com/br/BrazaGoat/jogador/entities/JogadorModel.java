@@ -1,6 +1,6 @@
-package com.br.BrazaGoat.model.entities;
+package com.br.BrazaGoat.jogador.entities;
 
-import com.br.BrazaGoat.model.enums.StatusJogadorPartida;
+import com.br.BrazaGoat.jogador.enums.StatusJogadorPartida;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -85,5 +85,9 @@ public class JogadorModel {
     }
 
     public void setId(long l) {
+    }
+
+    public UUID getIdJogador() {
+        return idJogador;
     }
 }

@@ -1,4 +1,4 @@
-package com.br.BrazaGoat.model.dtos;
+package com.br.BrazaGoat.jogador.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

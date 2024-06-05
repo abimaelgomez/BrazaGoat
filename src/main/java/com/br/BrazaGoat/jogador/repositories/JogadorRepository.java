@@ -1,6 +1,6 @@
-package com.br.BrazaGoat.repositories;
+package com.br.BrazaGoat.jogador.repositories;
 
-import com.br.BrazaGoat.model.entities.JogadorModel;
+import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
