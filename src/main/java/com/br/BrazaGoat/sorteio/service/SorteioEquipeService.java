@@ -1,9 +1,9 @@
-package com.br.BrazaGoat.service;
+package com.br.BrazaGoat.sorteio.service;
 
-import com.br.BrazaGoat.model.entities.JogadorModel;
-import com.br.BrazaGoat.model.entities.SorteioModel;
-import com.br.BrazaGoat.repositories.JogadorRepository;
-import com.br.BrazaGoat.repositories.SorteioRepository;
+import com.br.BrazaGoat.jogador.entities.JogadorModel;
+import com.br.BrazaGoat.sorteio.entities.SorteioModel;
+import com.br.BrazaGoat.jogador.repositories.JogadorRepository;
+import com.br.BrazaGoat.sorteio.repositories.SorteioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +25,30 @@ public class SorteioEquipeService {
 
     public void sortearEquipes() {
 
+        // Buscar o último sorteio realizado
+        SorteioModel ultimoSorteio = sorteioRepository.findTopByOrderByIdSorteioDesc();
+
+        // Atualizar apenas se houver um sorteio anterior
+        if (ultimoSorteio != null) {
+            // Limpar os dados do último sorteio
+            ultimoSorteio.getEquipeA().clear();
+            ultimoSorteio.getEquipeB().clear();
+            ultimoSorteio.getJogadoresReserva().clear();
+
+            // Sortear novamente as equipes
+            sortearNovaEquipe(ultimoSorteio);
+
+            // Salvar as atualizações no banco de dados
+            sorteioRepository.save(ultimoSorteio);
+        } else {
+            // Se não houver sorteios anteriores, realizar um sorteio novo
+            SorteioModel novoSorteio = new SorteioModel();
+            sortearNovaEquipe(novoSorteio);
+            sorteioRepository.save(novoSorteio);
+        }
+    }
+
+    private void sortearNovaEquipe(SorteioModel sorteio) {
         // Busca somente por jogadores ativos
         List<JogadorModel> jogadoresAtivos = jogadorRepository.findByStatus(true);
 
@@ -47,6 +71,7 @@ public class SorteioEquipeService {
 
         // Usado para garantir que um jogador não seja adicionado em ambas as equipes
         Set<String> nomeUsados = new HashSet<>();
+        Set<UUID> idsUsados = new HashSet<>();
 
         // Garantir que cada equipe tenha exatamente um goleiro
         if (goleiros.size() >= 2) {
@@ -55,13 +80,14 @@ public class SorteioEquipeService {
             JogadorModel goleiroA = goleiros.get(0);
             JogadorModel goleiroB = goleiros.get(1);
 
-            equipeA.add(goleiroA); // Adiciona o primeiro goleiro sorteado à equipe A
-            goleiroA.escalarJogador(); // Define o status do goleiro da equipe A como "escalado"
-            equipeB.add(goleiroB); // Adiciona o segundo goleiro sorteado à equipe B
-            goleiroB.escalarJogador(); // Define o status do goleiro da equipe B como "escalado"
-            nomeUsados.add(goleiroA.getNome()); // Adiciona o primeiro goleiro à lista de nomes usados
-            nomeUsados.add(goleiroB.getNome()); // Adiciona o segundo goleiro à lista de nomes usados
-
+            if (!idsUsados.contains(goleiroA.getIdJogador()) && !idsUsados.contains(goleiroB.getIdJogador())) {
+                equipeA.add(goleiroA); // Adiciona o primeiro goleiro sorteado à equipe A
+                goleiroA.escalarJogador(); // Define o status do goleiro da equipe A como "escalado"
+                equipeB.add(goleiroB); // Adiciona o segundo goleiro sorteado à equipe B
+                goleiroB.escalarJogador(); // Define o status do goleiro da equipe B como "escalado"
+                idsUsados.add(goleiroA.getIdJogador()); // Adiciona o primeiro goleiro à lista de IDs usados
+                idsUsados.add(goleiroB.getIdJogador()); // Adiciona o segundo goleiro à lista de IDs usados
+            }
             // Definir status de reserva para goleiros restantes, se houver
             for (int i = 2; i < goleiros.size(); i++) {
                 goleiros.get(i).reservarJogador();
@@ -101,22 +127,13 @@ public class SorteioEquipeService {
             }
         }
 
+        // Atualizar os dados do sorteio
+        sorteio.setDataSorteio(LocalDateTime.now());
+        sorteio.setEquipeA(equipeA);
+        sorteio.setEquipeB(equipeB);
+        sorteio.setJogadoresReserva(reservas);
 
-// Criar e salvar o sorteio
-        SorteioModel sorteio = SorteioModel.builder()
-                .dataSorteio(LocalDateTime.now())
-                .jogadoresSorteados(jogadoresAtivos)
-                .equipeA(equipeA)
-                .equipeB(equipeB)
-                .jogadoresReserva(reservas)
-                .build();
-
-        sorteioRepository.save(sorteio);
-
-        // Atualizar o status dos jogadores no banco de dados
-        jogadorRepository.saveAll(jogadoresAtivos);
-
-// Exibir as equipes formadas
+        // Exibir as equipes formadas
         System.out.println("_________________________________________");
         System.out.println("# UUID PARTIDA:" + sorteio.getIdSorteio() + " #");
         System.out.println("     ##### EQUIPES SORTEADAS #####");
