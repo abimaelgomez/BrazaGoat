@@ -59,4 +59,15 @@ public class SorteioModel {
     )
     private List<JogadorModel> jogadoresReserva;
 
+    public List<JogadorModel> getEquipeA() {
+        return equipeA;
+    }
+
+    public List<JogadorModel> getEquipeB() {
+        return equipeB;
+    }
+
+    public List<JogadorModel> getJogadoresReserva() {
+        return jogadoresReserva;
+    }
 }
