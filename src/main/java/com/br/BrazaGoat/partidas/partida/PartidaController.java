@@ -24,4 +24,9 @@ public class PartidaController {
         }
     }
 
+    @PostMapping("/confirmar-escalacao")
+    public void confirmarEscalacao() {
+        partidaService.confirmarEscalacao();
+    }
+
 }
