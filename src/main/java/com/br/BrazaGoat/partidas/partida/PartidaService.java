@@ -1,6 +1,7 @@
 package com.br.BrazaGoat.partidas.partida;
 
 import com.br.BrazaGoat.jogador.entities.JogadorModel;
+import com.br.BrazaGoat.jogador.enums.StatusJogadorPartida;
 import com.br.BrazaGoat.sorteio.entities.SorteioModel;
 import com.br.BrazaGoat.sorteio.repositories.SorteioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +117,84 @@ public class PartidaService {
         ultimaPartidaGerada.aguardarInicio();
         // Salvar a partida com o novo status
         partidaRepository.save(ultimaPartidaGerada);
-        System.out.println(" # AGUARDANDO INICIO DA PARTIDA ! ");
+        System.out.println(" # AGUARDANDO INICIO DA PARTIDA Nº ( " + ultimaPartidaGerada.getIdPartida()+" ).");
+    }
+
+    public void iniciarPartida() {
+        // Buscando a última partida gerada e confirmada a escalação
+        PartidaModel ultimaPartidaGerada = partidaRepository.findTopByOrderByIdPartidaDesc();
+
+        if (ultimaPartidaGerada == null) {
+            throw new RuntimeException("Nenhuma partida gerada encontrada.");
+        }
+
+        // Verificando se a partida já está em andamento
+        if (ultimaPartidaGerada.getStatusPartida() == StatusPartida.PARTIDA_EM_ANDAMENTO) {
+            System.out.println("A partida já está em andamento.");
+            return;
+        }
+
+        // Verificando se a partida está aguardando início
+        if (ultimaPartidaGerada.getStatusPartida() != StatusPartida.AGUARDANDO_INICIO) {
+            throw new RuntimeException("Você precisa confirmar a escalação antes de iniciar a partida.");
+        }
+
+        // Atualizar o status da partida para Em Andamento
+        ultimaPartidaGerada.EmAndamento();
+        ultimaPartidaGerada.setPartidaIniciada(true);
+
+        // Atualizar o status dos jogadores para JOGANDO_PARTIDA
+        for (JogadorModel jogador : ultimaPartidaGerada.getEquipeA()) {
+            jogador.setStatusJogadorPartida(StatusJogadorPartida.JOGANDO_PARTIDA);
+        }
+        for (JogadorModel jogador : ultimaPartidaGerada.getEquipeB()) {
+            jogador.setStatusJogadorPartida(StatusJogadorPartida.JOGANDO_PARTIDA);
+        }
+        // Os jogadores reservas continuam com o status de RESERVA
+        for (JogadorModel jogador : ultimaPartidaGerada.getReservas()) {
+            jogador.setStatusJogadorPartida(StatusJogadorPartida.RESERVA);
+        }
+
+        partidaRepository.save(ultimaPartidaGerada);
+        System.out.println("A partida Nº " + ultimaPartidaGerada.getIdPartida() + " foi iniciada.");
+        System.out.println("Status da partida: " + ultimaPartidaGerada.getStatusPartida());
+    }
+
+    public void finalizarPartida(){
+        // Buscando a última partida gerada em andamento ou acrescimo em andamento
+        PartidaModel ultimaPartidaGerada = partidaRepository.findTopByOrderByIdPartidaDesc();
+        if ( ultimaPartidaGerada == null){
+            throw new RuntimeException("Nenhuma Partida Encontrada");
+        }
+        // Verifica se partida esta em andamento
+        if (ultimaPartidaGerada.getStatusPartida() == StatusPartida.PARTIDA_EM_ANDAMENTO){
+            System.out.println("A partida está em andamento, e pode ser encerrada.");
+        }
+        // Verifica se está com o acrescimo em andamento
+        if (ultimaPartidaGerada.getStatusPartida() == StatusPartida.ACRESCIMO_EM_ANDAMENTO){
+            System.out.println("A partida está nos acrescimoo, e pode ser encerrada.");
+        }
+        // Verifica se está esperando ser finalizada
+        if (ultimaPartidaGerada.getStatusPartida() == StatusPartida.AGUARDANDO_FINALIZAR){
+            System.out.println("A partida está aguardando ser finalizada.");
+        }
+
+        ultimaPartidaGerada.Finalizada();
+        ultimaPartidaGerada.setPartidaFinalizada(true);
+
+        //Atualizar status de jogadores para fora da partida "Valor padrão"
+        for (JogadorModel jogador : ultimaPartidaGerada.getEquipeA()){
+            jogador.setStatusJogadorPartida(StatusJogadorPartida.FORA_DA_PARTIDA);
+        }
+        for (JogadorModel jogador : ultimaPartidaGerada.getEquipeB()){
+            jogador.setStatusJogadorPartida(StatusJogadorPartida.FORA_DA_PARTIDA);
+        }
+        for (JogadorModel jogador : ultimaPartidaGerada.getReservas()){
+            jogador.setStatusJogadorPartida(StatusJogadorPartida.FORA_DA_PARTIDA);
+        }
+
+        partidaRepository.save(ultimaPartidaGerada);
+        System.out.println("A partida Nº " + ultimaPartidaGerada.getIdPartida() + " foi Encerrada.");
+        System.out.println("Status da partida: " + ultimaPartidaGerada.getStatusPartida());
     }
 }
