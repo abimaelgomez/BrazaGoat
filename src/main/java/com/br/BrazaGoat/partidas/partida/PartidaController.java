@@ -24,9 +24,18 @@ public class PartidaController {
         }
     }
 
-    @PostMapping("/confirmar-escalacao")
+    @PostMapping("/ok")
     public void confirmarEscalacao() {
         partidaService.confirmarEscalacao();
     }
 
+    @PostMapping("/iniciar")
+    public void iniciarPartida() {
+        partidaService.iniciarPartida();
+    }
+
+    @PostMapping("/finalizar")
+    public void finalizarPartida() {
+        partidaService.finalizarPartida();
+    }
 }
