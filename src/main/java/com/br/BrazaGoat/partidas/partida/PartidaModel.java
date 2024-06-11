@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -50,6 +51,36 @@ public class PartidaModel {
     @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubstituicaoModel> substituicoes;
 
+    // Relacionamento ManyToOne com SorteioModel
+    @ManyToOne
+    @JoinColumn(name = "sorteio_id")
+    private SorteioModel sorteio;
+
+    // Relacionamento ManyToMany com JogadorModel
+    @ManyToMany
+    @JoinTable(
+            name = "partida_jogadores_equipe_a",
+            joinColumns = @JoinColumn(name = "partida_id"),
+            inverseJoinColumns = @JoinColumn(name = "jogador_id")
+    )
+    private List<JogadorModel> equipeA;
+
+    @ManyToMany
+    @JoinTable(
+            name = "partida_jogadores_equipe_b",
+            joinColumns = @JoinColumn(name = "partida_id"),
+            inverseJoinColumns = @JoinColumn(name = "jogador_id")
+    )
+    private List<JogadorModel> equipeB;
+
+    @ManyToMany
+    @JoinTable(
+            name = "partida_jogadores_reservas",
+            joinColumns = @JoinColumn(name = "partida_id"),
+            inverseJoinColumns = @JoinColumn(name = "jogador_id")
+    )
+    private List<JogadorModel> reservas;
+
     private boolean partidaIniciada;
     private boolean partidaFinalizada;
 
@@ -62,6 +93,13 @@ public class PartidaModel {
     private LocalDate dataFinal = LocalDate.now();
     private LocalTime horaDoInicio = LocalTime.now();
     private LocalTime horaDoFinal = LocalTime.now();
+
+    // Método para associar jogadores do sorteio à partida
+    public void associarJogadoresDoSorteio(SorteioModel sorteio) {
+        this.equipeA = new ArrayList<>(sorteio.getEquipeA());
+        this.equipeB = new ArrayList<>(sorteio.getEquipeB());
+        this.reservas = new ArrayList<>(sorteio.getJogadoresReserva());
+    }
 
     // Métodos para alterar o status da partida
     public void gerada(){
