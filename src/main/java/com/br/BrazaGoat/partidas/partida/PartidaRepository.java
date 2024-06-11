@@ -9,4 +9,5 @@ public interface PartidaRepository extends JpaRepository<PartidaModel, Long> {
 
     @Query("SELECT MAX(p.numeroDaPartida) FROM PartidaModel p")
     Integer findMaxNumeroDaPartida();
+    PartidaModel findTopByOrderByIdPartidaDesc();
 }
