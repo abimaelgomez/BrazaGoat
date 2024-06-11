@@ -1,23 +1,16 @@
 package com.br.BrazaGoat.partidas.partida;
 
+import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import com.br.BrazaGoat.sorteio.entities.SorteioModel;
 import com.br.BrazaGoat.sorteio.repositories.SorteioRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import org.hibernate.tool.schema.spi.CommandAcceptanceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PartidaService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private PartidaRepository partidaRepository;
@@ -26,9 +19,6 @@ public class PartidaService {
     private SorteioRepository sorteioRepository;
 
     public PartidaRecordDTO gerarPartida() {
-        // Executar o comando para excluir a coluna id_partida, se necessário
-        executarComandoExclusaoColuna();
-
         // Obtendo o último número de partida
         Integer ultimoNumeroPartida = partidaRepository.findMaxNumeroDaPartida();
 
@@ -49,6 +39,14 @@ public class PartidaService {
         // Adicionando o status de gerada
         novaPartida.gerada();
 
+        // Associando jogadores do sorteio à partida
+        novaPartida.associarJogadoresDoSorteio(ultimoSorteio);
+
+        // Listas para armazenar jogadores das equipes e reservas
+        List<JogadorModel> jogadoresEquipeA = novaPartida.getEquipeA();
+        List<JogadorModel> jogadoresEquipeB = novaPartida.getEquipeB();
+        List<JogadorModel> jogadoresReserva = ultimoSorteio.getJogadoresReserva();
+
         // Salvando a nova partida no banco de dados
         novaPartida = partidaRepository.save(novaPartida);
 
@@ -56,13 +54,31 @@ public class PartidaService {
         if (novaPartida.getIdPartida() == null) {
             throw new RuntimeException("Erro ao salvar a partida no banco de dados.");
         }
-
         // Imprimindo os detalhes da partida gerada no console
         System.out.println("______________________________________________________________");
         System.out.println("                PARTIDA Nº " + novaPartida.getNumeroDaPartida() + " GERADA               " + "| # ID: " + novaPartida.getIdPartida() + "|");
         System.out.println("                                       STATUS:" + novaPartida.getStatusPartida() + ".");
         System.out.println("-------------------------- PLACAR ----------------------------");
         System.out.println("                Equipe A - " + novaPartida.getPlacarEquipeA() + " x " + novaPartida.getPlacarEquipeB() + " - Equipe B ");
+        System.out.println("--------------------------------------------------------------");
+
+        // Imprimindo as equipes e reservas
+        System.out.println("                 EQUIPES E RESERVAS                          ");
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("EQUIPE A:");
+        for (JogadorModel jogador : novaPartida.getEquipeA()) {
+            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
+        }
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("EQUIPE B:");
+        for (JogadorModel jogador : novaPartida.getEquipeB()) {
+            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
+        }
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("RESERVAS:");
+        for (JogadorModel jogador : novaPartida.getReservas()) {
+            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
+        }
         System.out.println("--------------------------------------------------------------");
 
         // Criando um registro para representar a nova partida
@@ -81,17 +97,25 @@ public class PartidaService {
                 novaPartida.getDataInicio(),
                 novaPartida.getDataFinal(),
                 novaPartida.getHoraDoInicio(),
-                novaPartida.getHoraDoFinal()
+                novaPartida.getHoraDoFinal(),
+                jogadoresEquipeA, // Adiciona jogadores da equipe A
+                jogadoresEquipeB, // Adiciona jogadores da equipe B
+                jogadoresReserva // Adiciona jogadores reservas
         );
     }
 
-    private void executarComandoExclusaoColuna() {
-        try {
-            String sql = "ALTER TABLE public.partidas DROP COLUMN id_partida;";
-            jdbcTemplate.execute(sql);
-        } catch (Exception e) {
-            // Se ocorrer um erro ao executar o comando, apenas registre um aviso
-            System.out.println("Aviso: Falha ao executar o comando de exclusão da coluna id_partida.");
+    // Método para confirmar a escalação da última partida gerada
+    public void confirmarEscalacao() {
+        // Buscar a última partida gerada
+        PartidaModel ultimaPartidaGerada = partidaRepository.findTopByOrderByIdPartidaDesc();
+
+        if (ultimaPartidaGerada == null) {
+            throw new RuntimeException("Nenhuma partida gerada encontrada.");
         }
+        // Mudar o status da partida para Aguardando Início
+        ultimaPartidaGerada.aguardarInicio();
+        // Salvar a partida com o novo status
+        partidaRepository.save(ultimaPartidaGerada);
+        System.out.println(" # AGUARDANDO INICIO DA PARTIDA ! ");
     }
 }
