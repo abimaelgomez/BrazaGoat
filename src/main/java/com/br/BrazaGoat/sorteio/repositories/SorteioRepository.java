@@ -12,6 +12,5 @@ import java.util.UUID;
 @Repository
 public interface SorteioRepository extends JpaRepository<SorteioModel, UUID> {
 
-
     SorteioModel findTopByOrderByIdSorteioDesc();
 }
