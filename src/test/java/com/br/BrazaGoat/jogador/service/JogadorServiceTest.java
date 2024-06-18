@@ -101,8 +101,8 @@ class JogadorServiceTest {
         assertEquals(36, resultadoDtos.get(0).idade(), "A idade do primeiro jogador deve ser 36.");
         assertEquals(10, resultadoDtos.get(0).numeroCamisa(), "O numero da camisa do jogador 1 deve ser 10.");
         //jogador2
-        assertEquals("Cristiano", resultadoDtos.get(1).nome(), "O nome do segundo jogador deve ser 'Josef'.");
-        assertEquals("Ronaldo", resultadoDtos.get(1).sobrenome(), "O sobrenome do primeiro jogador deve ser 'Pereira'.");
+        assertEquals("Cristiano", resultadoDtos.get(1).nome(), "O nome do segundo jogador deve ser 'Cristiano'.");
+        assertEquals("Ronaldo", resultadoDtos.get(1).sobrenome(), "O sobrenome do primeiro jogador deve ser 'Ronaldo'.");
         assertEquals("Linha", resultadoDtos.get(1).posicao(), "A posição do jogador 1 deve ser 'Linha'.");
         assertEquals(39, resultadoDtos.get(1).idade(), "A idade do segundo jogador deve ser 39.");
         assertEquals(7, resultadoDtos.get(1).numeroCamisa(), "A idade do segundo jogador deve ser 7.");
@@ -169,16 +169,16 @@ class JogadorServiceTest {
     }
 
     @Test
-    void deveriaDeletarOJogadorSelecionado() {
+    void deveriaDeletarOJogadorSelecionadoPeloUUID() {
         // Configurar dados de teste
         UUID idJogador = UUID.randomUUID();
         JogadorModel jogador = new JogadorModel();
         jogador.setIdJogador(idJogador);
-        jogador.setNome("José");
-        jogador.setSobrenome("Pereira");
+        jogador.setNome("Neymar");
+        jogador.setSobrenome("Junior");
         jogador.setPosicao("Linha");
-        jogador.setIdade(18);
-        jogador.setNumeroCamisa(15);
+        jogador.setIdade(31);
+        jogador.setNumeroCamisa(11);
         jogador.setStatus(true);
 
         // Configurar mock para retornar o jogador

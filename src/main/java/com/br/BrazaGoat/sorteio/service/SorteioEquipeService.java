@@ -48,7 +48,7 @@ public class SorteioEquipeService {
         }
     }
 
-    private void sortearNovaEquipe(SorteioModel sorteio) {
+    void sortearNovaEquipe(SorteioModel sorteio) {
         // Busca somente por jogadores ativos
         List<JogadorModel> jogadoresAtivos = jogadorRepository.findByStatus(true);
 
@@ -154,4 +154,5 @@ public class SorteioEquipeService {
         }
         System.out.println("_________________________________________");
     }
+
 }
