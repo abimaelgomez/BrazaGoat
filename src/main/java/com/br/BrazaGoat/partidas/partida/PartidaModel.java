@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @Builder
 @Entity
-@Table(name="partidas")
+@Table(name = "partidas")
 public class PartidaModel {
 
     @Id
@@ -102,35 +102,35 @@ public class PartidaModel {
     }
 
     // Métodos para alterar o status da partida
-    public void gerada(){
+    public void gerada() {
         this.statusPartida = StatusPartida.PARTIDA_GERADA;
     }
 
-    public void aguardarInicio(){
+    public void aguardarInicio() {
         this.statusPartida = StatusPartida.AGUARDANDO_INICIO;
     }
 
-    public void EmAndamento(){
+    public void EmAndamento() {
         this.statusPartida = StatusPartida.PARTIDA_EM_ANDAMENTO;
     }
 
-    public void acrescimentoEmAndamento(){
+    public void acrescimentoEmAndamento() {
         this.statusPartida = StatusPartida.ACRESCIMO_EM_ANDAMENTO;
     }
 
-    public void Pausada(){
+    public void Pausada() {
         this.statusPartida = StatusPartida.PAUSADA;
     }
 
-    public void Cancelada(){
+    public void Cancelada() {
         this.statusPartida = StatusPartida.CANCELADA;
     }
 
-    public void aguardarFinalizacao(){
+    public void aguardarFinalizacao() {
         this.statusPartida = StatusPartida.AGUARDANDO_FINALIZAR;
     }
 
-    public void Finalizada(){
+    public void Finalizada() {
         this.statusPartida = StatusPartida.FINALIZADA;
     }
 }

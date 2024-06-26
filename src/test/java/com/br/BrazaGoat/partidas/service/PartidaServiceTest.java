@@ -1,9 +1,11 @@
-package com.br.BrazaGoat.partidas.partida;
+package com.br.BrazaGoat.partidas.service;
 
 import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import com.br.BrazaGoat.jogador.enums.StatusJogadorPartida;
+import com.br.BrazaGoat.partidas.partida.*;
 import com.br.BrazaGoat.sorteio.entities.SorteioModel;
 import com.br.BrazaGoat.sorteio.repositories.SorteioRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -147,7 +149,7 @@ class PartidaServiceTest {
         }
 
         // Verificar se a partida foi atualizada para o estado de "Aguardando Início"
-        assertEquals(StatusPartida.AGUARDANDO_INICIO, ultimaPartidaGerada.getStatusPartida(), "A partida deve estar com status AGUARDANDO_INICIO.");
+        Assertions.assertEquals(StatusPartida.AGUARDANDO_INICIO, ultimaPartidaGerada.getStatusPartida(), "A partida deve estar com status AGUARDANDO_INICIO.");
 
         // Verificar se os jogadores foram escalados
         for (JogadorModel jogador : ultimaPartidaGerada.getEquipeA()) {
