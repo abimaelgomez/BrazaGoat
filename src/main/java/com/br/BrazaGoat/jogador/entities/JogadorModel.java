@@ -46,6 +46,7 @@ public class JogadorModel {
     @Column(name = "status_do_jogador_partida", length = 50)
     private StatusJogadorPartida statusJogadorPartida;
 
+    private long pontuacaoDapartida;
     private long pontuacaoTotal;
     private long pontuacaoMedia;
     private int golsMarcados;
