@@ -4,8 +4,8 @@ import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import com.br.BrazaGoat.sorteio.entities.SorteioModel;
 import com.br.BrazaGoat.jogador.repositories.JogadorRepository;
 import com.br.BrazaGoat.sorteio.repositories.SorteioRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,13 +14,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SorteioEquipeService {
 
-    @Autowired
-    private JogadorRepository jogadorRepository;
+    private final JogadorRepository jogadorRepository;
 
-    @Autowired
-    private SorteioRepository sorteioRepository;
+    private final SorteioRepository sorteioRepository;
 
     private final int quantidadeGoleiros = 1; // Quantidade de goleiros por equipe
     private final int quantidadeJogadoresLinha = 2; // Quantidade de jogadores de linha por equipe

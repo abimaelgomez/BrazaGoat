@@ -110,7 +110,7 @@ public class PartidaModel {
         this.statusPartida = StatusPartida.AGUARDANDO_INICIO;
     }
 
-    public void EmAndamento() {
+    public void marcarEmAndamento() {
         this.statusPartida = StatusPartida.PARTIDA_EM_ANDAMENTO;
     }
 
@@ -118,11 +118,11 @@ public class PartidaModel {
         this.statusPartida = StatusPartida.ACRESCIMO_EM_ANDAMENTO;
     }
 
-    public void Pausada() {
+    public void marcarPausada() {
         this.statusPartida = StatusPartida.PAUSADA;
     }
 
-    public void Cancelada() {
+    public void marcarCancelada() {
         this.statusPartida = StatusPartida.CANCELADA;
     }
 
@@ -130,7 +130,7 @@ public class PartidaModel {
         this.statusPartida = StatusPartida.AGUARDANDO_FINALIZAR;
     }
 
-    public void Finalizada() {
+    public void marcarFinalizada() {
         this.statusPartida = StatusPartida.FINALIZADA;
     }
 }

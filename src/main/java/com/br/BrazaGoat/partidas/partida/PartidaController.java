@@ -1,6 +1,6 @@
 package com.br.BrazaGoat.partidas.partida;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/partida")
+@RequiredArgsConstructor
 public class PartidaController {
 
-    @Autowired
-    PartidaService partidaService;
+    private final PartidaService partidaService;
 
     @PostMapping("/gerar")
     public ResponseEntity<Object> gerarPartida() {

@@ -4,8 +4,8 @@ import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import com.br.BrazaGoat.partidas.partida.PartidaModel;
 import com.br.BrazaGoat.partidas.partida.PartidaRepository;
 import com.br.BrazaGoat.partidas.partida.StatusPartida;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,17 +15,16 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GolService {
 
-    @Autowired
-    private GolRepository golRepository;
+    private final GolRepository golRepository;
 
-    @Autowired
-    private PartidaRepository partidaRepository;
+    private final PartidaRepository partidaRepository;
 
     public void adicionarGol(UUID idJogador, TipoDeGol tipoDeGol, boolean golContra) {
         // Buscar a última partida em andamento
-        PartidaModel partidaEmAndamento = partidaRepository.findTopByOrderByIdPartidaDesc();
+        PartidaModel partidaEmAndamento = partidaRepository.findTopByStatusPartidaOrderByIdPartidaDesc(StatusPartida.PARTIDA_EM_ANDAMENTO);
 
         if (partidaEmAndamento == null || partidaEmAndamento.getStatusPartida() != StatusPartida.PARTIDA_EM_ANDAMENTO) {
             throw new RuntimeException("Nenhuma partida em andamento encontrada.");

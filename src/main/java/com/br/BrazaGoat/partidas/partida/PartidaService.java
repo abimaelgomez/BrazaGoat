@@ -4,21 +4,20 @@ import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import com.br.BrazaGoat.jogador.enums.StatusJogadorPartida;
 import com.br.BrazaGoat.sorteio.entities.SorteioModel;
 import com.br.BrazaGoat.sorteio.repositories.SorteioRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PartidaService {
 
-    @Autowired
-    private PartidaRepository partidaRepository;
+    private final PartidaRepository partidaRepository;
 
-    @Autowired
-    private SorteioRepository sorteioRepository;
+    private final SorteioRepository sorteioRepository;
 
     public PartidaRecordDTO gerarPartida() {
         // Obtendo o último número de partida
@@ -141,7 +140,7 @@ public class PartidaService {
         }
 
         // Atualizar o status da partida para Em Andamento
-        ultimaPartidaGerada.EmAndamento();
+        ultimaPartidaGerada.marcarEmAndamento();
         ultimaPartidaGerada.setPartidaIniciada(true);
 
         // Atualizar o status dos jogadores para JOGANDO_PARTIDA
@@ -180,7 +179,7 @@ public class PartidaService {
             log.info("A partida está aguardando ser finalizada.");
         }
 
-        ultimaPartidaGerada.Finalizada();
+        ultimaPartidaGerada.marcarFinalizada();
         ultimaPartidaGerada.setPartidaFinalizada(true);
 
         //Atualizar status de jogadores para fora da partida "Valor padrão"
