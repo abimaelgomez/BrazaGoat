@@ -15,27 +15,30 @@ public class PartidaController {
     PartidaService partidaService;
 
     @PostMapping("/gerar")
-    public ResponseEntity<String> gerarPartida() {
+    public ResponseEntity<Object> gerarPartida() {
         PartidaRecordDTO novaPartida = partidaService.gerarPartida();
         if (novaPartida != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Partida gerada com sucesso!");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível gerar a partida.");
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaPartida);
         }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Não foi possível gerar a partida.");
     }
 
     @PostMapping("/ok")
-    public void confirmarEscalacao() {
+    public ResponseEntity<String> confirmarEscalacao() {
         partidaService.confirmarEscalacao();
+        return ResponseEntity.ok("Escalação confirmada! Aguardando início da partida.");
     }
 
     @PostMapping("/iniciar")
-    public void iniciarPartida() {
+    public ResponseEntity<String> iniciarPartida() {
         partidaService.iniciarPartida();
+        return ResponseEntity.ok("Partida iniciada com sucesso!");
     }
 
     @PostMapping("/finalizar")
-    public void finalizarPartida() {
+    public ResponseEntity<String> finalizarPartida() {
         partidaService.finalizarPartida();
+        return ResponseEntity.ok("Partida finalizada com sucesso!");
     }
 }

@@ -4,6 +4,7 @@ import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import com.br.BrazaGoat.partidas.partida.PartidaModel;
 import com.br.BrazaGoat.partidas.partida.PartidaRepository;
 import com.br.BrazaGoat.partidas.partida.StatusPartida;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class GolService {
 
@@ -79,7 +81,7 @@ public class GolService {
         partidaRepository.save(partidaEmAndamento);
 
         // Imprimir o placar atualizado no console
-        System.out.println("Placar atualizado: Equipe A - " + partidaEmAndamento.getPlacarEquipeA() + " x " + partidaEmAndamento.getPlacarEquipeB() + " - Equipe B");
+        log.info("Placar atualizado: Equipe A - " + partidaEmAndamento.getPlacarEquipeA() + " x " + partidaEmAndamento.getPlacarEquipeB() + " - Equipe B");
     }
 
     private JogadorModel buscarJogadorPorId(UUID idJogador, PartidaModel partida) {

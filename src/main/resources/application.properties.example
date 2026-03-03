@@ -1,0 +1,5 @@
+spring.application.name=BrazaGoat
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/brazagoat-db}
+spring.datasource.username=${DB_USERNAME:seu_usuario}
+spring.datasource.password=${DB_PASSWORD:sua_senha}
+spring.jpa.hibernate.ddl-auto=update

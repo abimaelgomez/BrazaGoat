@@ -4,11 +4,13 @@ import com.br.BrazaGoat.jogador.entities.JogadorModel;
 import com.br.BrazaGoat.jogador.enums.StatusJogadorPartida;
 import com.br.BrazaGoat.sorteio.entities.SorteioModel;
 import com.br.BrazaGoat.sorteio.repositories.SorteioRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class PartidaService {
 
@@ -55,31 +57,31 @@ public class PartidaService {
             throw new RuntimeException("Erro ao salvar a partida no banco de dados.");
         }
         // Imprimindo os detalhes da partida gerada no console
-        System.out.println("______________________________________________________________");
-        System.out.println("                PARTIDA Nº " + novaPartida.getNumeroDaPartida() + " GERADA               " + "| # ID: " + novaPartida.getIdPartida() + "|");
-        System.out.println("                                       STATUS:" + novaPartida.getStatusPartida() + ".");
-        System.out.println("-------------------------- PLACAR ----------------------------");
-        System.out.println("                Equipe A - " + novaPartida.getPlacarEquipeA() + " x " + novaPartida.getPlacarEquipeB() + " - Equipe B ");
-        System.out.println("--------------------------------------------------------------");
+        log.info("______________________________________________________________");
+        log.info("                PARTIDA Nº " + novaPartida.getNumeroDaPartida() + " GERADA               " + "| # ID: " + novaPartida.getIdPartida() + "|");
+        log.info("                                       STATUS:" + novaPartida.getStatusPartida() + ".");
+        log.info("-------------------------- PLACAR ----------------------------");
+        log.info("                Equipe A - " + novaPartida.getPlacarEquipeA() + " x " + novaPartida.getPlacarEquipeB() + " - Equipe B ");
+        log.info("--------------------------------------------------------------");
 
         // Imprimindo as equipes e reservas
-        System.out.println("                 EQUIPES E RESERVAS                          ");
-        System.out.println("--------------------------------------------------------------");
-        System.out.println("EQUIPE A:");
+        log.info("                 EQUIPES E RESERVAS                          ");
+        log.info("--------------------------------------------------------------");
+        log.info("EQUIPE A:");
         for (JogadorModel jogador : novaPartida.getEquipeA()) {
-            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
+            log.info(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
         }
-        System.out.println("--------------------------------------------------------------");
-        System.out.println("EQUIPE B:");
+        log.info("--------------------------------------------------------------");
+        log.info("EQUIPE B:");
         for (JogadorModel jogador : novaPartida.getEquipeB()) {
-            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
+            log.info(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
         }
-        System.out.println("--------------------------------------------------------------");
-        System.out.println("RESERVAS:");
+        log.info("--------------------------------------------------------------");
+        log.info("RESERVAS:");
         for (JogadorModel jogador : novaPartida.getReservas()) {
-            System.out.println(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
+            log.info(jogador.getInformacaoJogador() + " #STATUS: " + jogador.getStatusJogadorPartida());
         }
-        System.out.println("--------------------------------------------------------------");
+        log.info("--------------------------------------------------------------");
 
         // Criando um registro para representar a nova partida
         return new PartidaRecordDTO(
@@ -116,7 +118,7 @@ public class PartidaService {
         ultimaPartidaGerada.aguardarInicio();
         // Salvar a partida com o novo status
         partidaRepository.save(ultimaPartidaGerada);
-        System.out.println(" # AGUARDANDO INICIO DA PARTIDA Nº ( " + ultimaPartidaGerada.getIdPartida()+" ).");
+        log.info(" # AGUARDANDO INICIO DA PARTIDA Nº ( " + ultimaPartidaGerada.getIdPartida()+" ).");
     }
 
     public void iniciarPartida() {
@@ -129,7 +131,7 @@ public class PartidaService {
 
         // Verificando se a partida já está em andamento
         if (ultimaPartidaGerada.getStatusPartida() == StatusPartida.PARTIDA_EM_ANDAMENTO) {
-            System.out.println("A partida já está em andamento.");
+            log.info("A partida já está em andamento.");
             return;
         }
 
@@ -155,8 +157,8 @@ public class PartidaService {
         }
 
         partidaRepository.save(ultimaPartidaGerada);
-        System.out.println("A partida Nº " + ultimaPartidaGerada.getIdPartida() + " foi iniciada.");
-        System.out.println("Status da partida: " + ultimaPartidaGerada.getStatusPartida());
+        log.info("A partida Nº " + ultimaPartidaGerada.getIdPartida() + " foi iniciada.");
+        log.info("Status da partida: " + ultimaPartidaGerada.getStatusPartida());
     }
 
     public void finalizarPartida(){
@@ -167,15 +169,15 @@ public class PartidaService {
         }
         // Verifica se partida esta em andamento
         if (ultimaPartidaGerada.getStatusPartida() == StatusPartida.PARTIDA_EM_ANDAMENTO){
-            System.out.println("A partida está em andamento, e pode ser encerrada.");
+            log.info("A partida está em andamento, e pode ser encerrada.");
         }
         // Verifica se está com o acrescimo em andamento
         if (ultimaPartidaGerada.getStatusPartida() == StatusPartida.ACRESCIMO_EM_ANDAMENTO){
-            System.out.println("A partida está nos acrescimoo, e pode ser encerrada.");
+            log.info("A partida está nos acrescimoo, e pode ser encerrada.");
         }
         // Verifica se está esperando ser finalizada
         if (ultimaPartidaGerada.getStatusPartida() == StatusPartida.AGUARDANDO_FINALIZAR){
-            System.out.println("A partida está aguardando ser finalizada.");
+            log.info("A partida está aguardando ser finalizada.");
         }
 
         ultimaPartidaGerada.Finalizada();
@@ -193,7 +195,7 @@ public class PartidaService {
         }
 
         partidaRepository.save(ultimaPartidaGerada);
-        System.out.println("A partida Nº " + ultimaPartidaGerada.getIdPartida() + " foi Encerrada.");
-        System.out.println("Status da partida: " + ultimaPartidaGerada.getStatusPartida());
+        log.info("A partida Nº " + ultimaPartidaGerada.getIdPartida() + " foi Encerrada.");
+        log.info("Status da partida: " + ultimaPartidaGerada.getStatusPartida());
     }
 }
